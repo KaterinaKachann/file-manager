@@ -1,6 +1,7 @@
 import * as navigation from './navigation.js';
 import * as fileOps from './fileOperations.js';
 import * as osInfo from './osInfo.js';
+import * as hashOps from './hashOperations.js';
 
 const commandHandlers = {
   up: navigation.up,
@@ -13,7 +14,8 @@ const commandHandlers = {
   cp: fileOps.cp,
   mv: fileOps.mv,
   rm: fileOps.rm,
-  os: osInfo.os
+  os: osInfo.os,
+  hash: hashOps.hash
 };
 
 export const operations = {
