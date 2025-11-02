@@ -1,13 +1,16 @@
 import { createInterface } from 'readline';
 import { homedir } from 'os';
 import { chdir, cwd } from 'process';
+import { operations } from './operations/index.js';
 
+let currentDirectory = homedir();
 let username = '';
 
 export function fileManager(user) {
   username = user;
   
-  chdir(homedir());
+  chdir(currentDirectory);
+  currentDirectory = cwd();
   
   console.log(`Welcome to the File Manager, ${username}!`);
   showCurrentDirectory();
@@ -18,7 +21,7 @@ export function fileManager(user) {
     prompt: ''
   });
   
-  rl.on('line', (input) => {
+  rl.on('line', async (input) => {
     const trimmedInput = input.trim();
     
     if (trimmedInput === '.exit') {
@@ -28,7 +31,39 @@ export function fileManager(user) {
       return;
     }
     
-    showCurrentDirectory();
+    if (!trimmedInput) {
+      showCurrentDirectory();
+      return;
+    }
+    
+    try {
+      const parts = trimmedInput.split(/\s+/);
+      const command = parts[0];
+      const args = parts.slice(1);
+      
+      const result = await operations.execute(command, args, currentDirectory);
+      
+      if (result.newDirectory) {
+        currentDirectory = result.newDirectory;
+        chdir(currentDirectory);
+      }
+      
+      if (result.output) {
+        console.log(result.output);
+      }
+      
+      showCurrentDirectory();
+    } catch (error) {
+      if (error.message === 'Invalid input') {
+        console.log('Invalid input');
+      } else if (error.message === 'Operation failed') {
+        console.log('Operation failed');
+      } else {
+        // Catch any unexpected errors and treat them as operation failed
+        console.log('Operation failed');
+      }
+      showCurrentDirectory();
+    }
   });
   
   rl.on('SIGINT', () => {
