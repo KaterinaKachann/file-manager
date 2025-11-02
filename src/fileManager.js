@@ -1,6 +1,6 @@
 import { createInterface } from 'readline';
 import { homedir } from 'os';
-import { chdir } from 'process';
+import { chdir, cwd } from 'process';
 
 let username = '';
 
@@ -10,6 +10,7 @@ export function fileManager(user) {
   chdir(homedir());
   
   console.log(`Welcome to the File Manager, ${username}!`);
+  showCurrentDirectory();
   
   const rl = createInterface({
     input: process.stdin,
@@ -26,6 +27,8 @@ export function fileManager(user) {
       process.exit(0);
       return;
     }
+    
+    showCurrentDirectory();
   });
   
   rl.on('SIGINT', () => {
@@ -33,4 +36,8 @@ export function fileManager(user) {
     rl.close();
     process.exit(0);
   });
+}
+
+function showCurrentDirectory() {
+  console.log(`You are currently in ${cwd()}`);
 }
