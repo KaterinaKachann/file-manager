@@ -1,6 +1,7 @@
-import { createReadStream } from 'fs';
+import { createReadStream, createWriteStream } from 'fs';
 import { stat, writeFile, mkdir as fsMkdir, rename, unlink } from 'fs/promises';
 import { resolve, join, dirname } from 'path';
+import { pipeline } from 'stream/promises';
 
 export async function cat(args, currentDirectory) {
   if (args.length === 0) {
@@ -107,7 +108,16 @@ export async function cp(args, currentDirectory) {
     throw new Error('Operation failed');
   }
   
-  throw new Error('Operation failed');
+  // Use streams for copying
+  const fileName = sourcePath.split(/[/\\]/).pop();
+  const targetPath = join(targetDir, fileName);
+  
+  const readStream = createReadStream(sourcePath);
+  const writeStream = createWriteStream(targetPath);
+  
+  await pipeline(readStream, writeStream);
+  
+  return {};
 }
 
 export async function mv(args, currentDirectory) {
@@ -141,7 +151,19 @@ export async function mv(args, currentDirectory) {
     throw new Error('Operation failed');
   }
   
-  throw new Error('Operation failed');
+  // Use streams for copying
+  const fileName = sourcePath.split(/[/\\]/).pop();
+  const targetPath = join(targetDir, fileName);
+  
+  const readStream = createReadStream(sourcePath);
+  const writeStream = createWriteStream(targetPath);
+  
+  await pipeline(readStream, writeStream);
+  
+  // Delete source file
+  await unlink(sourcePath);
+  
+  return {};
 }
 
 export async function rm(args, currentDirectory) {
