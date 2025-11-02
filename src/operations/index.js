@@ -1,5 +1,6 @@
 import * as navigation from './navigation.js';
 import * as fileOps from './fileOperations.js';
+import * as osInfo from './osInfo.js';
 
 const commandHandlers = {
   up: navigation.up,
@@ -11,7 +12,8 @@ const commandHandlers = {
   rn: fileOps.rn,
   cp: fileOps.cp,
   mv: fileOps.mv,
-  rm: fileOps.rm
+  rm: fileOps.rm,
+  os: osInfo.os
 };
 
 export const operations = {
