@@ -2,6 +2,7 @@ import * as navigation from './navigation.js';
 import * as fileOps from './fileOperations.js';
 import * as osInfo from './osInfo.js';
 import * as hashOps from './hashOperations.js';
+import * as compressOps from './compressOperations.js';
 
 const commandHandlers = {
   up: navigation.up,
@@ -15,7 +16,9 @@ const commandHandlers = {
   mv: fileOps.mv,
   rm: fileOps.rm,
   os: osInfo.os,
-  hash: hashOps.hash
+  hash: hashOps.hash,
+  compress: compressOps.compress,
+  decompress: compressOps.decompress
 };
 
 export const operations = {
